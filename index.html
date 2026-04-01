@@ -3,37 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache">
-<title>公文一键排版工具 v2</title>
+<title>公文一键排版工具 v3</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;min-height:100vh}
 .topbar{background:linear-gradient(135deg,#c41230,#8B0000);color:#fff;padding:14px 20px;text-align:center}
 .topbar h1{font-size:18px;font-weight:bold}
 .topbar p{font-size:12px;opacity:.8;margin-top:4px}
-.container{max-width:900px;margin:0 auto;padding:15px}
+.container{max-width:960px;margin:0 auto;padding:15px}
 .card{background:#fff;border-radius:10px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
 .card-title{font-size:14px;font-weight:bold;color:#333;margin-bottom:12px;padding-left:8px;border-left:3px solid #c41230}
 input[type="text"],textarea,select{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:8px;outline:none}
 input[type="text"]:focus,textarea:focus,select:focus{border-color:#c41230}
 textarea{min-height:280px;resize:vertical;font-family:inherit;line-height:1.8}
-.btn{background:#c41230;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:14px;cursor:pointer;margin-right:8px;margin-bottom:8px}
-.btn:hover{background:#a01028}
-.btn-green{background:#28a745}
-.btn-green:hover{background:#218838}
+.btn{background:#c41230;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:14px;cursor:pointer;margin-right:8px;margin-bottom:8px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{opacity:.88}
+.btn-green{background:#27ae60}
 .btn-blue{background:#1a5276}
-.btn-blue:hover{background:#154360}
+.btn-orange{background:#e67e22}
+.btn-purple{background:#7d3c98}
 .label{font-size:13px;color:#555;margin-bottom:5px;font-weight:500}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .col2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .col3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .tip{background:#e8f4fd;border:1px solid #a9cce3;border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;color:#1a5276;line-height:1.8}
-.tag{display:inline-block;background:#f0f0f0;color:#666;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px}
-.tag.active{background:#c41230;color:#fff}
 #preview-wrap{display:none;margin-top:12px}
-#preview-area{background:#fff;border:1px solid #ccc;border-radius:4px;padding:0;overflow:hidden}
-#preview-content{padding:37mm 26mm 35mm 28mm;min-height:297mm;box-sizing:border-box}
-.preview-toolbar{background:#f8f8f8;border-bottom:1px solid #ddd;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap}
+.preview-toolbar{background:#f8f8f8;border-bottom:1px solid #ddd;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;border-radius:10px 10px 0 0}
+#preview-area{background:#e0e0e0;padding:20px;border-radius:0 0 10px 10px}
+#preview-content{background:#fff;margin:0 auto;padding:37mm 26mm 35mm 28mm;min-height:297mm;box-shadow:0 2px 12px rgba(0,0,0,0.15);max-width:210mm}
 #gatex{position:fixed;inset:0;background:linear-gradient(135deg,#c41230,#8B0000);display:flex;align-items:center;justify-content:center;z-index:9999}
 #gatex-inner{background:#fff;padding:28px;border-radius:12px;max-width:340px;width:90%;text-align:center}
 #gatex h2{font-size:17px;margin-bottom:6px}
@@ -41,16 +37,14 @@ textarea{min-height:280px;resize:vertical;font-family:inherit;line-height:1.8}
 .err{color:#e74c3c;font-size:12px;display:none;margin-top:6px}
 .form-group{margin-bottom:10px}
 .hint{font-size:11px;color:#999;margin-top:-6px;margin-bottom:8px}
-.upload-area{border:2px dashed #ddd;border-radius:8px;padding:20px;text-align:center;cursor:pointer;margin-bottom:8px;transition:border-color .2s}
-.upload-area:hover{border-color:#c41230}
+.upload-area{border:2px dashed #ddd;border-radius:8px;padding:18px;text-align:center;cursor:pointer;margin-bottom:8px;transition:border-color .2s}
+.upload-area:hover{border-color:#c41230;background:#fff5f5}
 .upload-area p{color:#999;font-size:13px}
 input[type="file"]{display:none}
-.format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:8px}
-.format-item{border:1px solid #eee;border-radius:6px;padding:8px;text-align:center;cursor:pointer;font-size:12px}
-.format-item:hover{border-color:#c41230;background:#fff5f5}
-.format-item.selected{border-color:#c41230;background:#fff5f5}
-.format-item .fi-title{font-weight:bold;color:#333;margin-bottom:2px}
-.format-item .fi-desc{color:#999;font-size:11px}
+@media print{
+  body>*:not(#print-frame){display:none!important}
+  #print-frame{display:block!important;position:fixed;inset:0;width:100%;height:100%;border:none}
+}
 </style>
 </head>
 <body>
@@ -61,33 +55,28 @@ input[type="file"]{display:none}
 <p>请回答问题后进入</p>
 <div class="label" style="text-align:left;margin-bottom:6px">材料狗你还要加班么？</div>
 <input type="text" id="pw" placeholder="请输入答案">
-<button class="btn" onclick="mycheck()" style="width:100%;margin-top:4px">确认进入</button>
+<button class="btn" onclick="mycheck()" style="width:100%;margin-top:4px;justify-content:center">确认进入</button>
 <div class="err" id="err">答案错误，请重试</div>
 </div>
 </div>
 
 <div class="topbar">
-<h1>📄 公文一键排版工具 v2</h1>
-<p>严格遵循 GB/T 9704-2012 党政机关公文格式标准</p>
+<h1>📄 公文一键排版工具 v3</h1>
+<p>严格遵循 GB/T 9704-2012 党政机关公文格式 · 支持导出 Word / PDF</p>
 </div>
 
 <div class="container">
 
 <div class="tip">
-<strong>📐 GB/T 9704-2012 标准说明：</strong><br>
-大标题（公文标题）：黑体二号加粗，居中，上下各空一行<br>
-一级标题（一、二、三…）：黑体三号加粗，顶格<br>
-二级标题（（一）（二）…）：楷体三号加粗，顶格<br>
-三级标题（1. 2. 3.）：仿宋三号加粗，顶格<br>
-正文：仿宋三号，首行缩进2字符，行距固定28pt<br>
-落款：右对齐，仿宋三号
+<strong>📐 GB/T 9704-2012 标准：</strong>
+大标题：黑体二号加粗居中 ｜ 一级（一、）：黑体三号加粗 ｜ 二级（（一））：楷体三号加粗 ｜ 三级（1.）：仿宋三号加粗 ｜ 正文：仿宋三号首行缩进2字 ｜ 行距固定28pt ｜ 边距上37下35左28右26mm
 </div>
 
 <div class="card">
 <div class="card-title">📤 文档导入</div>
 <div class="upload-area" onclick="document.getElementById('file-input').click()">
 <p>📁 点击上传 TXT 文件，或直接在下方粘贴文字</p>
-<p style="font-size:11px;margin-top:4px">支持 .txt 格式</p>
+<p style="font-size:11px;margin-top:4px">支持 .txt 格式（UTF-8编码）</p>
 </div>
 <input type="file" id="file-input" accept=".txt" onchange="loadFile(this)">
 </div>
@@ -100,7 +89,7 @@ input[type="file"]{display:none}
 </div>
 <div class="form-group">
 <div class="label">正文内容</div>
-<div class="hint">系统自动识别：一、二、三…（一级）；（一）（二）…（二级）；1. 2. 3.（三级）；其余为正文</div>
+<div class="hint">自动识别：一、二、三…（一级黑体）；（一）（二）…（二级楷体）；1. 2. 3.（三级仿宋加粗）；其余为正文</div>
 <textarea id="content" placeholder="在此粘贴或输入正文内容…
 
 示例：
@@ -111,10 +100,7 @@ input[type="file"]{display:none}
 各村签订责任书……
 
 1. 明确责任人
-各村党支部书记为第一责任人……
-
-二、主要措施
-……"></textarea>
+各村党支部书记为第一责任人……"></textarea>
 </div>
 <div class="col2">
 <div class="form-group">
@@ -123,7 +109,7 @@ input[type="file"]{display:none}
 </div>
 <div class="form-group">
 <div class="label">成文日期</div>
-<input type="text" id="date" placeholder="例如：2026年4月1日" id="date">
+<input type="text" id="date" placeholder="例如：2026年4月1日">
 </div>
 </div>
 </div>
@@ -134,17 +120,17 @@ input[type="file"]{display:none}
 <div class="form-group">
 <div class="label">正文字体</div>
 <select id="body-font">
-<option value="仿宋,FangSong,STFangsong">仿宋（标准）</option>
-<option value="楷体,KaiTi,STKaiti">楷体</option>
-<option value="宋体,SimSun,STSong">宋体</option>
+<option value="FangSong,仿宋,STFangsong">仿宋（标准）</option>
+<option value="KaiTi,楷体,STKaiti">楷体</option>
+<option value="SimSun,宋体,STSong">宋体</option>
 </select>
 </div>
 <div class="form-group">
 <div class="label">正文字号</div>
 <select id="body-size">
-<option value="16pt">三号（16pt）标准</option>
-<option value="14pt">四号（14pt）</option>
-<option value="18pt">二号（18pt）</option>
+<option value="16pt">三号 16pt（标准）</option>
+<option value="14pt">四号 14pt</option>
+<option value="18pt">二号 18pt</option>
 </select>
 </div>
 <div class="form-group">
@@ -153,36 +139,38 @@ input[type="file"]{display:none}
 <option value="28pt">固定28pt（标准）</option>
 <option value="24pt">固定24pt</option>
 <option value="32pt">固定32pt</option>
-<option value="1.8">1.8倍</option>
-<option value="2">2倍</option>
+<option value="1.8em">1.8倍</option>
+<option value="2em">2倍</option>
 </select>
 </div>
 </div>
 <div class="col3">
 <div class="form-group">
 <div class="label">上边距(mm)</div>
-<input type="text" id="margin-top" value="37">
+<input type="text" id="mt" value="37">
 </div>
 <div class="form-group">
 <div class="label">下边距(mm)</div>
-<input type="text" id="margin-bottom" value="35">
+<input type="text" id="mb" value="35">
 </div>
 <div class="form-group">
 <div class="label">左边距(mm)</div>
-<input type="text" id="margin-left" value="28">
+<input type="text" id="ml" value="28">
 </div>
 </div>
 </div>
 
 <div class="card">
-<button class="btn" onclick="formatDoc()" style="width:100%;padding:14px;font-size:16px">🚀 一键排版</button>
+<button class="btn" onclick="formatDoc()" style="width:100%;padding:14px;font-size:16px;justify-content:center">🚀 一键排版</button>
 </div>
 
 <div id="preview-wrap">
 <div class="preview-toolbar">
-<button class="btn btn-green" onclick="copyHTML()">📋 复制HTML（粘贴到公众号）</button>
-<button class="btn btn-blue" onclick="window.print()">🖨️ 打印/导出PDF</button>
-<button class="btn" onclick="document.getElementById('preview-wrap').style.display='none'">✕ 关闭预览</button>
+<button class="btn btn-orange" onclick="downloadWord()">📝 下载 Word (.doc)</button>
+<button class="btn btn-purple" onclick="downloadPDF()">📄 下载 PDF</button>
+<button class="btn btn-green" onclick="copyHTML()">📋 复制HTML</button>
+<button class="btn btn-blue" onclick="printDoc()">🖨️ 打印</button>
+<button class="btn" style="background:#888" onclick="document.getElementById('preview-wrap').style.display='none'">✕ 关闭</button>
 </div>
 <div id="preview-area">
 <div id="preview-content"></div>
@@ -192,131 +180,170 @@ input[type="file"]{display:none}
 </div>
 
 <script>
+// ===== 密码验证 =====
 function mycheck() {
-var v = document.getElementById("pw").value.trim();
-if (v === "为了人民") {
-document.getElementById("gatex").style.display = "none";
-var d = new Date();
-document.getElementById("date").value = d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日";
-} else {
-document.getElementById("err").style.display = "block";
-document.getElementById("pw").value = "";
-}
+  var v = document.getElementById("pw").value.trim();
+  if (v === "为了人民") {
+    document.getElementById("gatex").style.display = "none";
+    var d = new Date();
+    document.getElementById("date").value = d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日";
+  } else {
+    document.getElementById("err").style.display = "block";
+    document.getElementById("pw").value = "";
+  }
 }
 
+// ===== 上传文件 =====
 function loadFile(input) {
-var file = input.files[0];
-if (!file) return;
-var reader = new FileReader();
-reader.onload = function(e) {
-var text = e.target.result;
-var lines = text.split("\n");
-if (lines.length > 0) {
-var first = lines[0].trim();
-if (first && !first.match(/^[一二三四五六七八九十]、/) && !first.match(/^（[一二三四五六七八九十]）/)) {
-document.getElementById("doc-title").value = first;
-document.getElementById("content").value = lines.slice(1).join("\n").trim();
-} else {
-document.getElementById("content").value = text;
-}
-}
-};
-reader.readAsText(file, "UTF-8");
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var text = e.target.result;
+    var lines = text.split("\n");
+    var first = lines[0].trim();
+    if (first && !first.match(/^[一二三四五六七八九十]+、/) && !first.match(/^（[一二三四五六七八九十]+）/)) {
+      document.getElementById("doc-title").value = first;
+      document.getElementById("content").value = lines.slice(1).join("\n").trim();
+    } else {
+      document.getElementById("content").value = text;
+    }
+  };
+  reader.readAsText(file, "UTF-8");
 }
 
-function esc(s) {
-return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// ===== 核心排版函数 =====
+function buildHTML(forExport) {
+  var title    = document.getElementById("doc-title").value.trim();
+  var content  = document.getElementById("content").value;
+  var author   = document.getElementById("author").value.trim();
+  var date     = document.getElementById("date").value.trim();
+  var bodyFont = document.getElementById("body-font").value;
+  var bodySize = document.getElementById("body-size").value;
+  var lineH    = document.getElementById("line-height").value;
+  var mt = document.getElementById("mt").value||"37";
+  var mb = document.getElementById("mb").value||"35";
+  var ml = document.getElementById("ml").value||"28";
+
+  if (!date) {
+    var d = new Date();
+    date = d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日";
+  }
+
+  var body = "";
+
+  // 大标题
+  if (title) {
+    body += '<p style="text-align:center;font-family:SimHei,黑体,STHeiti;font-size:22pt;font-weight:bold;line-height:1.6;margin:12pt 0 18pt 0">' + esc(title) + '</p>';
+  }
+
+  // 正文行处理
+  var lines = content.split("\n");
+  for (var i = 0; i < lines.length; i++) {
+    var t = lines[i].trim();
+    if (!t) continue;
+
+    if (/^[一二三四五六七八九十百]+、/.test(t)) {
+      // 一级标题
+      body += '<p style="font-family:SimHei,黑体,STHeiti;font-size:'+bodySize+';font-weight:bold;line-height:'+lineH+';margin-top:6pt;text-indent:0">' + esc(t) + '</p>';
+    } else if (/^（[一二三四五六七八九十]+）/.test(t)) {
+      // 二级标题
+      body += '<p style="font-family:KaiTi,楷体,STKaiti;font-size:'+bodySize+';font-weight:bold;line-height:'+lineH+';text-indent:0">' + esc(t) + '</p>';
+    } else if (/^[0-9]+[\.、]\s/.test(t)) {
+      // 三级标题
+      body += '<p style="font-family:'+bodyFont+';font-size:'+bodySize+';font-weight:bold;line-height:'+lineH+';text-indent:0">' + esc(t) + '</p>';
+    } else if (/^[0-9]+）/.test(t)) {
+      // 四级标题
+      body += '<p style="font-family:'+bodyFont+';font-size:'+bodySize+';line-height:'+lineH+';text-indent:2em">' + esc(t) + '</p>';
+    } else {
+      // 正文
+      body += '<p style="font-family:'+bodyFont+';font-size:'+bodySize+';line-height:'+lineH+';text-indent:2em">' + esc(t) + '</p>';
+    }
+  }
+
+  // 落款
+  if (author || date) {
+    body += '<div style="margin-top:24pt">';
+    if (author) body += '<p style="text-align:right;font-family:'+bodyFont+';font-size:'+bodySize+';line-height:'+lineH+';margin-right:4em">' + esc(author) + '</p>';
+    if (date)   body += '<p style="text-align:right;font-family:'+bodyFont+';font-size:'+bodySize+';line-height:'+lineH+';margin-right:4em">' + esc(date) + '</p>';
+    body += '</div>';
+  }
+
+  if (forExport) {
+    return '<div style="padding:'+mt+'mm 26mm '+mb+'mm '+ml+'mm;background:#fff;min-height:297mm">' + body + '</div>';
+  }
+  return { body: body, mt: mt, mb: mb, ml: ml };
 }
 
+// ===== 排版预览 =====
 function formatDoc() {
-var title = document.getElementById("doc-title").value.trim();
-var content = document.getElementById("content").value;
-var author = document.getElementById("author").value.trim();
-var date = document.getElementById("date").value.trim();
-var bodyFont = document.getElementById("body-font").value;
-var bodySize = document.getElementById("body-size").value;
-var lineH = document.getElementById("line-height").value;
-var mt = document.getElementById("margin-top").value || "37";
-var mb = document.getElementById("margin-bottom").value || "35";
-var ml = document.getElementById("margin-left").value || "28";
-var mr = "26";
+  var content = document.getElementById("content").value;
+  if (!content.trim()) { alert("请输入正文内容"); return; }
 
-if (!content.trim()) { alert("请输入正文内容"); return; }
-if (!date) {
-var d = new Date();
-date = d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日";
+  var r = buildHTML(false);
+  var mt = r.mt, mb = r.mb, ml = r.ml;
+
+  var pc = document.getElementById("preview-content");
+  pc.innerHTML = r.body;
+  pc.style.padding = mt+"mm 26mm "+mb+"mm "+ml+"mm";
+
+  document.getElementById("preview-wrap").style.display = "block";
+  setTimeout(function(){ document.getElementById("preview-wrap").scrollIntoView({behavior:"smooth"}); }, 100);
 }
 
-var html = "";
+// ===== 下载 Word =====
+function downloadWord() {
+  var html = buildHTML(true);
+  var title = document.getElementById("doc-title").value.trim() || "公文";
 
-// 大标题
-if (title) {
-html += '<div style="text-align:center;font-family:黑体,SimHei,STHeiti;font-size:22pt;font-weight:bold;line-height:1.5;margin-bottom:24pt;margin-top:12pt">' + esc(title) + '</div>';
-}
+  var wordHTML = '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><meta name=ProgId content=Word.Document><meta name=Generator content="Microsoft Word 15"><meta name=Originator content="Microsoft Word 15"><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><style>@page{size:210mm 297mm;margin:37mm 26mm 35mm 28mm}body{font-family:FangSong,仿宋;font-size:16pt}p{margin:0;line-height:28pt}</style></head><body>' + html + '</body></html>';
 
-// 正文处理
-var lines = content.split("\n");
-for (var i = 0; i < lines.length; i++) {
-var line = lines[i];
-var t = line.trim();
-if (!t) continue;
-
-// 一级标题：一、二、三…
-if (/^[一二三四五六七八九十百]+、/.test(t)) {
-html += '<div style="font-family:黑体,SimHei,STHeiti;font-size:' + bodySize + ';font-weight:bold;line-height:' + lineH + ';margin-top:6pt">' + esc(t) + '</div>';
-}
-// 二级标题：（一）（二）…
-else if (/^（[一二三四五六七八九十]+）/.test(t)) {
-html += '<div style="font-family:楷体,KaiTi,STKaiti;font-size:' + bodySize + ';font-weight:bold;line-height:' + lineH + '">' + esc(t) + '</div>';
-}
-// 三级标题：1. 2. 3.
-else if (/^[0-9]+[\.、]\s/.test(t)) {
-html += '<div style="font-family:' + bodyFont + ';font-size:' + bodySize + ';font-weight:bold;line-height:' + lineH + '">' + esc(t) + '</div>';
-}
-// 四级标题：1）2）
-else if (/^[0-9]+）/.test(t)) {
-html += '<div style="font-family:' + bodyFont + ';font-size:' + bodySize + ';line-height:' + lineH + ';text-indent:2em">' + esc(t) + '</div>';
-}
-// 正文
-else {
-html += '<div style="font-family:' + bodyFont + ';font-size:' + bodySize + ';line-height:' + lineH + ';text-indent:2em">' + esc(t) + '</div>';
-}
+  var blob = new Blob(['\ufeff' + wordHTML], {type:'application/msword;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = title + ".doc";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-// 落款
-if (author || date) {
-html += '<div style="margin-top:24pt">';
-if (author) {
-html += '<div style="text-align:right;font-family:' + bodyFont + ';font-size:' + bodySize + ';line-height:' + lineH + ';margin-right:4em">' + esc(author) + '</div>';
-}
-if (date) {
-html += '<div style="text-align:right;font-family:' + bodyFont + ';font-size:' + bodySize + ';line-height:' + lineH + ';margin-right:4em">' + esc(date) + '</div>';
-}
-html += '</div>';
+// ===== 下载 PDF（打印另存为PDF）=====
+function downloadPDF() {
+  var html = buildHTML(true);
+  var title = document.getElementById("doc-title").value.trim() || "公文";
+
+  var printWin = window.open('', '_blank', 'width=900,height=700');
+  printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + esc(title) + '</title><style>@page{size:A4;margin:0}body{margin:0;padding:0}p{margin:0}</style></head><body>' + html + '</body></html>');
+  printWin.document.close();
+  printWin.focus();
+  setTimeout(function(){
+    printWin.print();
+  }, 600);
 }
 
-// 设置预览区域
-var pc = document.getElementById("preview-content");
-pc.innerHTML = html;
-pc.style.padding = mt + "mm " + mr + "mm " + mb + "mm " + ml + "mm";
-
-document.getElementById("preview-wrap").style.display = "block";
-setTimeout(function() {
-document.getElementById("preview-wrap").scrollIntoView({behavior:"smooth"});
-}, 100);
+// ===== 打印 =====
+function printDoc() {
+  var html = buildHTML(true);
+  var title = document.getElementById("doc-title").value.trim() || "公文";
+  var printWin = window.open('', '_blank');
+  printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + esc(title) + '</title><style>@page{size:A4;margin:0}body{margin:0}p{margin:0}</style></head><body>' + html + '</body></html>');
+  printWin.document.close();
+  printWin.focus();
+  setTimeout(function(){ printWin.print(); printWin.close(); }, 500);
 }
 
+// ===== 复制HTML =====
 function copyHTML() {
-var html = document.getElementById("preview-content").innerHTML;
-if (!html) { alert("请先排版"); return; }
-var wrapper = '<div style="max-width:677px;margin:0 auto">' + html + '</div>';
-var ta = document.createElement("textarea");
-ta.value = wrapper;
-document.body.appendChild(ta);
-ta.select();
-document.execCommand("copy");
-document.body.removeChild(ta);
-alert("已复制！可直接粘贴到公众号后台");
+  var html = buildHTML(true);
+  var ta = document.createElement("textarea");
+  ta.value = html;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  alert("已复制！可直接粘贴到公众号后台");
 }
 </script>
 </body>

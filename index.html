@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>公文一键排版工具 v3</title>
+<title>公文一键排版工具 v4</title>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;min-height:100vh}
@@ -61,8 +62,8 @@ input[type="file"]{display:none}
 </div>
 
 <div class="topbar">
-<h1>📄 公文一键排版工具 v3</h1>
-<p>严格遵循 GB/T 9704-2012 党政机关公文格式 · 支持导出 Word / PDF</p>
+<h1>📄 公文一键排版工具 v4</h1>
+<p>严格遵循 GB/T 9704-2012 党政机关公文格式 · 支持 Word/TXT 上传 · 导出 Word / PDF</p>
 </div>
 
 <div class="container">
@@ -75,10 +76,10 @@ input[type="file"]{display:none}
 <div class="card">
 <div class="card-title">📤 文档导入</div>
 <div class="upload-area" onclick="document.getElementById('file-input').click()">
-<p>📁 点击上传 TXT 文件，或直接在下方粘贴文字</p>
-<p style="font-size:11px;margin-top:4px">支持 .txt 格式（UTF-8编码）</p>
+<p>📁 点击上传 Word 或 TXT 文件</p>
+<p style="font-size:11px;margin-top:4px">支持 .docx、.txt 格式</p>
 </div>
-<input type="file" id="file-input" accept=".txt" onchange="loadFile(this)">
+<input type="file" id="file-input" accept=".docx,.txt" onchange="loadFile(this)">
 </div>
 
 <div class="card">
@@ -194,27 +195,50 @@ function mycheck() {
 }
 
 // ===== 上传文件 =====
+// ===== 上传文件 =====
 function loadFile(input) {
   var file = input.files[0];
   if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var text = e.target.result;
-    var lines = text.split("\n");
-    var first = lines[0].trim();
-    if (first && !first.match(/^[一二三四五六七八九十]+、/) && !first.match(/^（[一二三四五六七八九十]+）/)) {
-      document.getElementById("doc-title").value = first;
-      document.getElementById("content").value = lines.slice(1).join("\n").trim();
-    } else {
-      document.getElementById("content").value = text;
-    }
-  };
-  reader.readAsText(file, "UTF-8");
-}
-
-function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
-// ===== 核心排版函数 =====
+  
+  var fileName = file.name.toLowerCase();
+  
+  if (fileName.endsWith('.docx')) {
+    // Word 文件
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var arrayBuffer = e.target.result;
+      mammoth.extractRawText({arrayBuffer: arrayBuffer}).then(function(result) {
+        var text = result.value;
+        var lines = text.split("\n");
+        var first = lines[0].trim();
+        if (first && !first.match(/^[一二三四五六七八九十]+、/) && !first.match(/^（[一二三四五六七八九十]+）/) && first.length < 50) {
+          document.getElementById("doc-title").value = first;
+          document.getElementById("content").value = lines.slice(1).join("\n").trim();
+        } else {
+          document.getElementById("content").value = text;
+        }
+      }).catch(function(err) {
+        alert("Word文件解析失败，请尝试复制文字粘贴");
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    // TXT 文件
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var text = e.target.result;
+      var lines = text.split("\n");
+      var first = lines[0].trim();
+      if (first && !first.match(/^[一二三四五六七八九十]+、/) && !first.match(/^（[一二三四五六七八九十]+）/) && first.length < 50) {
+        document.getElementById("doc-title").value = first;
+        document.getElementById("content").value = lines.slice(1).join("\n").trim();
+      } else {
+        document.getElementById("content").value = text;
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  }
+}// ===== 核心排版函数 =====
 function buildHTML(forExport) {
   var title    = document.getElementById("doc-title").value.trim();
   var content  = document.getElementById("content").value;

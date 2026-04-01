@@ -4,31 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache">
-<title>公文一键排版工具</title>
+<title>公文一键排版工具 v2</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f5f5;padding:15px}
-.card{background:#fff;border-radius:10px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
-.card-title{font-size:15px;font-weight:bold;color:#333;margin-bottom:12px;padding-left:8px;border-left:3px solid #c41230}
-input[type="text"],textarea,select{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:8px}
-textarea{min-height:200px;resize:vertical;font-family:inherit;line-height:1.8}
-.btn{background:#c41230;color:#fff;border:none;padding:10px 20px;border-radius:6px;font-size:14px;cursor:pointer;margin-right:8px;margin-bottom:8px}
+body{font-family:-apple-system,BlinkMacFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;min-height:100vh}
+.topbar{background:linear-gradient(135deg,#c41230,#8B0000);color:#fff;padding:14px 20px;text-align:center}
+.topbar h1{font-size:18px;font-weight:bold}
+.topbar p{font-size:12px;opacity:.8;margin-top:4px}
+.container{max-width:900px;margin:0 auto;padding:15px}
+.card{background:#fff;border-radius:10px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.card-title{font-size:14px;font-weight:bold;color:#333;margin-bottom:12px;padding-left:8px;border-left:3px solid #c41230}
+input[type="text"],textarea,select{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:8px;outline:none}
+input[type="text"]:focus,textarea:focus,select:focus{border-color:#c41230}
+textarea{min-height:280px;resize:vertical;font-family:inherit;line-height:1.8}
+.btn{background:#c41230;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:14px;cursor:pointer;margin-right:8px;margin-bottom:8px}
 .btn:hover{background:#a01028}
-.btn-sm{padding:6px 12px;font-size:12px}
-.label{font-size:13px;color:#666;margin-bottom:6px}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.tip{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px;color:#856404}
-#preview{background:#fff;padding:20px;border-radius:10px;margin-top:12px;display:none}
+.btn-green{background:#28a745}
+.btn-green:hover{background:#218838}
+.btn-blue{background:#1a5276}
+.btn-blue:hover{background:#154360}
+.label{font-size:13px;color:#555;margin-bottom:5px;font-weight:500}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.col3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.tip{background:#e8f4fd;border:1px solid #a9cce3;border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;color:#1a5276;line-height:1.8}
+.tag{display:inline-block;background:#f0f0f0;color:#666;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px}
+.tag.active{background:#c41230;color:#fff}
+#preview-wrap{display:none;margin-top:12px}
+#preview-area{background:#fff;border:1px solid #ccc;border-radius:4px;padding:0;overflow:hidden}
+#preview-content{padding:37mm 26mm 35mm 28mm;min-height:297mm;box-sizing:border-box}
+.preview-toolbar{background:#f8f8f8;border-bottom:1px solid #ddd;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap}
 #gatex{position:fixed;inset:0;background:linear-gradient(135deg,#c41230,#8B0000);display:flex;align-items:center;justify-content:center;z-index:9999}
-#gatex-inner{background:#fff;padding:24px;border-radius:12px;max-width:320px;width:90%;text-align:center}
-#gatex h2{font-size:16px;margin-bottom:8px}
+#gatex-inner{background:#fff;padding:28px;border-radius:12px;max-width:340px;width:90%;text-align:center}
+#gatex h2{font-size:17px;margin-bottom:6px}
 #gatex p{font-size:12px;color:#666;margin-bottom:16px}
-#gatex input{margin-bottom:12px}
-.err{color:#e74c3c;font-size:12px;display:none}
-.empty{color:#999;font-size:13px}
-.checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.checkbox-row input{width:auto;margin:0}
-.checkbox-row label{font-size:13px;color:#333}
+.err{color:#e74c3c;font-size:12px;display:none;margin-top:6px}
+.form-group{margin-bottom:10px}
+.hint{font-size:11px;color:#999;margin-top:-6px;margin-bottom:8px}
+.upload-area{border:2px dashed #ddd;border-radius:8px;padding:20px;text-align:center;cursor:pointer;margin-bottom:8px;transition:border-color .2s}
+.upload-area:hover{border-color:#c41230}
+.upload-area p{color:#999;font-size:13px}
+input[type="file"]{display:none}
+.format-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:8px}
+.format-item{border:1px solid #eee;border-radius:6px;padding:8px;text-align:center;cursor:pointer;font-size:12px}
+.format-item:hover{border-color:#c41230;background:#fff5f5}
+.format-item.selected{border-color:#c41230;background:#fff5f5}
+.format-item .fi-title{font-weight:bold;color:#333;margin-bottom:2px}
+.format-item .fi-desc{color:#999;font-size:11px}
 </style>
 </head>
 <body>
@@ -37,154 +59,264 @@ textarea{min-height:200px;resize:vertical;font-family:inherit;line-height:1.8}
 <div id="gatex-inner">
 <h2>公文一键排版工具</h2>
 <p>请回答问题后进入</p>
-<div class="label">材料狗你还要加班么？</div>
+<div class="label" style="text-align:left;margin-bottom:6px">材料狗你还要加班么？</div>
 <input type="text" id="pw" placeholder="请输入答案">
-<button class="btn" onclick="mycheck()" style="width:100%">确认进入</button>
+<button class="btn" onclick="mycheck()" style="width:100%;margin-top:4px">确认进入</button>
 <div class="err" id="err">答案错误，请重试</div>
 </div>
 </div>
 
+<div class="topbar">
+<h1>📄 公文一键排版工具 v2</h1>
+<p>严格遵循 GB/T 9704-2012 党政机关公文格式标准</p>
+</div>
+
+<div class="container">
+
 <div class="tip">
-📝 <strong>GB/T 9704-2012 公文格式标准</strong><br>
-• A4纸，边距上37下35左28右26mm<br>
-• 标题：黑体二号加粗 | 正文：仿宋三号<br>
-• 每行28字，每页22行，行距固定28pt<br>
-• 层次序号：一、（一）、1.、1）
+<strong>📐 GB/T 9704-2012 标准说明：</strong><br>
+大标题（公文标题）：黑体二号加粗，居中，上下各空一行<br>
+一级标题（一、二、三…）：黑体三号加粗，顶格<br>
+二级标题（（一）（二）…）：楷体三号加粗，顶格<br>
+三级标题（1. 2. 3.）：仿宋三号加粗，顶格<br>
+正文：仿宋三号，首行缩进2字符，行距固定28pt<br>
+落款：右对齐，仿宋三号
 </div>
 
 <div class="card">
-<div class="card-title">📝 原文输入</div>
-<div class="label">文章标题（可选）</div>
-<input type="text" id="title" placeholder="输入标题将自动居中加粗">
+<div class="card-title">📤 文档导入</div>
+<div class="upload-area" onclick="document.getElementById('file-input').click()">
+<p>📁 点击上传 TXT 文件，或直接在下方粘贴文字</p>
+<p style="font-size:11px;margin-top:4px">支持 .txt 格式</p>
+</div>
+<input type="file" id="file-input" accept=".txt" onchange="loadFile(this)">
+</div>
+
+<div class="card">
+<div class="card-title">✏️ 文档内容</div>
+<div class="form-group">
+<div class="label">公文标题（大标题）</div>
+<input type="text" id="doc-title" placeholder="例如：关于开展森林防火工作的通知">
+</div>
+<div class="form-group">
 <div class="label">正文内容</div>
-<textarea id="content" placeholder="在此输入需要排版的文字内容…"></textarea>
-<div class="label">落款（可选）</div>
-<input type="text" id="author" placeholder="例如：中共XX镇委员会 XX镇人民政府">
-<div class="label">日期（可选）</div>
-<input type="text" id="date" placeholder="例如：2026年4月1日">
+<div class="hint">系统自动识别：一、二、三…（一级）；（一）（二）…（二级）；1. 2. 3.（三级）；其余为正文</div>
+<textarea id="content" placeholder="在此粘贴或输入正文内容…
+
+示例：
+一、工作背景
+当前正值森林防火关键期……
+
+（一）压实责任
+各村签订责任书……
+
+1. 明确责任人
+各村党支部书记为第一责任人……
+
+二、主要措施
+……"></textarea>
+</div>
+<div class="col2">
+<div class="form-group">
+<div class="label">发文机关（落款）</div>
+<input type="text" id="author" placeholder="例如：中共保和镇委员会" value="中共保和镇委员会">
+</div>
+<div class="form-group">
+<div class="label">成文日期</div>
+<input type="text" id="date" placeholder="例如：2026年4月1日" id="date">
+</div>
+</div>
 </div>
 
 <div class="card">
-<div class="card-title">⚙️ 排版选项</div>
-<div class="checkbox-row">
-<input type="checkbox" id="opt-title" checked>
-<label for="opt-title"> 标题居中加粗</label>
+<div class="card-title">⚙️ 格式设置</div>
+<div class="col3">
+<div class="form-group">
+<div class="label">正文字体</div>
+<select id="body-font">
+<option value="仿宋,FangSong,STFangsong">仿宋（标准）</option>
+<option value="楷体,KaiTi,STKaiti">楷体</option>
+<option value="宋体,SimSun,STSong">宋体</option>
+</select>
 </div>
-<div class="checkbox-row">
-<input type="checkbox" id="opt-indent" checked>
-<label for="opt-indent"> 正文首行缩进2字符</label>
+<div class="form-group">
+<div class="label">正文字号</div>
+<select id="body-size">
+<option value="16pt">三号（16pt）标准</option>
+<option value="14pt">四号（14pt）</option>
+<option value="18pt">二号（18pt）</option>
+</select>
 </div>
-<div class="checkbox-row">
-<input type="checkbox" id="opt-level" checked>
-<label for="opt-level"> 自动识别层次序号（一、（一）、1.、1））</label>
+<div class="form-group">
+<div class="label">行距</div>
+<select id="line-height">
+<option value="28pt">固定28pt（标准）</option>
+<option value="24pt">固定24pt</option>
+<option value="32pt">固定32pt</option>
+<option value="1.8">1.8倍</option>
+<option value="2">2倍</option>
+</select>
 </div>
-<div class="checkbox-row">
-<input type="checkbox" id="opt-space" checked>
-<label for="opt-space"> 段落之间空一行</label>
+</div>
+<div class="col3">
+<div class="form-group">
+<div class="label">上边距(mm)</div>
+<input type="text" id="margin-top" value="37">
+</div>
+<div class="form-group">
+<div class="label">下边距(mm)</div>
+<input type="text" id="margin-bottom" value="35">
+</div>
+<div class="form-group">
+<div class="label">左边距(mm)</div>
+<input type="text" id="margin-left" value="28">
+</div>
 </div>
 </div>
 
 <div class="card">
-<div class="card-title">🚀 一键排版</div>
-<button class="btn" onclick="formatDoc()" style="width:100%;padding:14px">开始排版</button>
+<button class="btn" onclick="formatDoc()" style="width:100%;padding:14px;font-size:16px">🚀 一键排版</button>
 </div>
 
-<div id="preview"></div>
+<div id="preview-wrap">
+<div class="preview-toolbar">
+<button class="btn btn-green" onclick="copyHTML()">📋 复制HTML（粘贴到公众号）</button>
+<button class="btn btn-blue" onclick="window.print()">🖨️ 打印/导出PDF</button>
+<button class="btn" onclick="document.getElementById('preview-wrap').style.display='none'">✕ 关闭预览</button>
+</div>
+<div id="preview-area">
+<div id="preview-content"></div>
+</div>
+</div>
+
+</div>
 
 <script>
 function mycheck() {
 var v = document.getElementById("pw").value.trim();
 if (v === "为了人民") {
 document.getElementById("gatex").style.display = "none";
+var d = new Date();
+document.getElementById("date").value = d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日";
 } else {
 document.getElementById("err").style.display = "block";
 document.getElementById("pw").value = "";
 }
 }
 
-function formatDoc() {
-var title = document.getElementById("title").value.trim();
-var content = document.getElementById("content").value;
-var author = document.getElementById("author").value.trim();
-var date = document.getElementById("date").value.trim();
-var optTitle = document.getElementById("opt-title").checked;
-var optIndent = document.getElementById("opt-indent").checked;
-var optLevel = document.getElementById("opt-level").checked;
-var optSpace = document.getElementById("opt-space").checked;
-
-if (!content) {
-alert("请输入正文内容");
-return;
-}
-
-// 处理日期
-if (!date) {
-var d = new Date();
-date = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日";
-}
-
-// 处理标题
-var html = "";
-if (title && optTitle) {
-html += '<div style="text-align:center;font-size:22pt;font-weight:bold;margin-bottom:24pt;line-height:1.5">' + esc(title) + '</div>';
-} else if (title) {
-html += '<div style="margin-bottom:12pt;font-weight:bold">' + esc(title) + '</div>';
-}
-
-// 处理正文
-var lines = content.split("\n");
-for (var i = 0; i < lines.length; i++) {
-var line = lines[i].trim();
-if (!line) continue;
-
-var formatted = line;
-
-// 层次序号识别
-if (optLevel) {
-if (/^[一二三四五六七八九十]、/.test(line)) {
-formatted = '<b>' + line + '</b>';
-} else if (/^（[一二三四五六七八九十]）/.test(line)) {
-formatted = '<b>' + line + '</b>';
-} else if (/^[0-9]+、/.test(line)) {
-formatted = '<b>' + line + '</b>';
-} else if (/^[0-9]+\.[0-9]*/.test(line)) {
-formatted = '<b>' + line + '</b>';
+function loadFile(input) {
+var file = input.files[0];
+if (!file) return;
+var reader = new FileReader();
+reader.onload = function(e) {
+var text = e.target.result;
+var lines = text.split("\n");
+if (lines.length > 0) {
+var first = lines[0].trim();
+if (first && !first.match(/^[一二三四五六七八九十]、/) && !first.match(/^（[一二三四五六七八九十]）/)) {
+document.getElementById("doc-title").value = first;
+document.getElementById("content").value = lines.slice(1).join("\n").trim();
+} else {
+document.getElementById("content").value = text;
 }
 }
-
-// 首行缩进
-if (optIndent && !formatted.startsWith('<b>')) {
-formatted = '<span style="padding-left:2em">' + formatted + '</span>';
-}
-
-html += '<div style="margin-bottom:' + (optSpace ? '12pt' : '0') + ';text-indent:2em;line-height:2">' + formatted + '</div>';
-}
-
-// 处理落款
-if (author) {
-html += '<div style="text-align:right;margin-top:24pt;margin-right:2em;line-height:2">' + esc(author) + '</div>';
-}
-if (date) {
-html += '<div style="text-align:right;margin-right:2em;line-height:2">' + esc(date) + '</div>';
-}
-
-// 生成预览
-var preview = document.getElementById("preview");
-preview.innerHTML = html;
-preview.style.display = "block";
-preview.style.fontFamily = "仿宋, FangSong, STSong, 'Times New Roman', serif";
-preview.style.fontSize = "15pt";
-preview.style.lineHeight = "28pt";
-preview.style.padding = "37mm 26mm 35mm 28mm";
-preview.style.background = "#fff";
-preview.style.border = "1px solid #ccc";
-preview.style.minHeight = "600px";
-
-window.scrollTo(0, document.body.scrollHeight);
+};
+reader.readAsText(file, "UTF-8");
 }
 
 function esc(s) {
-return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function formatDoc() {
+var title = document.getElementById("doc-title").value.trim();
+var content = document.getElementById("content").value;
+var author = document.getElementById("author").value.trim();
+var date = document.getElementById("date").value.trim();
+var bodyFont = document.getElementById("body-font").value;
+var bodySize = document.getElementById("body-size").value;
+var lineH = document.getElementById("line-height").value;
+var mt = document.getElementById("margin-top").value || "37";
+var mb = document.getElementById("margin-bottom").value || "35";
+var ml = document.getElementById("margin-left").value || "28";
+var mr = "26";
+
+if (!content.trim()) { alert("请输入正文内容"); return; }
+if (!date) {
+var d = new Date();
+date = d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日";
+}
+
+var html = "";
+
+// 大标题
+if (title) {
+html += '<div style="text-align:center;font-family:黑体,SimHei,STHeiti;font-size:22pt;font-weight:bold;line-height:1.5;margin-bottom:24pt;margin-top:12pt">' + esc(title) + '</div>';
+}
+
+// 正文处理
+var lines = content.split("\n");
+for (var i = 0; i < lines.length; i++) {
+var line = lines[i];
+var t = line.trim();
+if (!t) continue;
+
+// 一级标题：一、二、三…
+if (/^[一二三四五六七八九十百]+、/.test(t)) {
+html += '<div style="font-family:黑体,SimHei,STHeiti;font-size:' + bodySize + ';font-weight:bold;line-height:' + lineH + ';margin-top:6pt">' + esc(t) + '</div>';
+}
+// 二级标题：（一）（二）…
+else if (/^（[一二三四五六七八九十]+）/.test(t)) {
+html += '<div style="font-family:楷体,KaiTi,STKaiti;font-size:' + bodySize + ';font-weight:bold;line-height:' + lineH + '">' + esc(t) + '</div>';
+}
+// 三级标题：1. 2. 3.
+else if (/^[0-9]+[\.、]\s/.test(t)) {
+html += '<div style="font-family:' + bodyFont + ';font-size:' + bodySize + ';font-weight:bold;line-height:' + lineH + '">' + esc(t) + '</div>';
+}
+// 四级标题：1）2）
+else if (/^[0-9]+）/.test(t)) {
+html += '<div style="font-family:' + bodyFont + ';font-size:' + bodySize + ';line-height:' + lineH + ';text-indent:2em">' + esc(t) + '</div>';
+}
+// 正文
+else {
+html += '<div style="font-family:' + bodyFont + ';font-size:' + bodySize + ';line-height:' + lineH + ';text-indent:2em">' + esc(t) + '</div>';
+}
+}
+
+// 落款
+if (author || date) {
+html += '<div style="margin-top:24pt">';
+if (author) {
+html += '<div style="text-align:right;font-family:' + bodyFont + ';font-size:' + bodySize + ';line-height:' + lineH + ';margin-right:4em">' + esc(author) + '</div>';
+}
+if (date) {
+html += '<div style="text-align:right;font-family:' + bodyFont + ';font-size:' + bodySize + ';line-height:' + lineH + ';margin-right:4em">' + esc(date) + '</div>';
+}
+html += '</div>';
+}
+
+// 设置预览区域
+var pc = document.getElementById("preview-content");
+pc.innerHTML = html;
+pc.style.padding = mt + "mm " + mr + "mm " + mb + "mm " + ml + "mm";
+
+document.getElementById("preview-wrap").style.display = "block";
+setTimeout(function() {
+document.getElementById("preview-wrap").scrollIntoView({behavior:"smooth"});
+}, 100);
+}
+
+function copyHTML() {
+var html = document.getElementById("preview-content").innerHTML;
+if (!html) { alert("请先排版"); return; }
+var wrapper = '<div style="max-width:677px;margin:0 auto">' + html + '</div>';
+var ta = document.createElement("textarea");
+ta.value = wrapper;
+document.body.appendChild(ta);
+ta.select();
+document.execCommand("copy");
+document.body.removeChild(ta);
+alert("已复制！可直接粘贴到公众号后台");
 }
 </script>
 </body>
